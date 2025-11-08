@@ -1,3 +1,28 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "Abstract packaging background",
+      "imageUrl": "https://images.unsplash.com/photo-1736979110904-d9d9efb35cf6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwYWNrYWdpbmclMjBhYnN0cmFjdHxlbnwwfHx8fDE3NjI1ODg0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "packaging abstract"
+    },
+    {
+      "id": "mailer-box",
+      "description": "Customizable Mailer Box",
+      "imageUrl": "https://images.unsplash.com/photo-1575237843875-43d5e6ee0911?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYWlsZXIlMjBib3h8ZW58MHx8fHwxNzYyNTg4NDE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mailer box"
+    },
+    {
+      "id": "shipping-box",
+      "description": "Sturdy Shipping Box",
+      "imageUrl": "https://images.unsplash.com/photo-1570554886111-e80fcca6a029?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzaGlwcGluZyUyMGJveHxlbnwwfHx8fDE3NjI1ODg0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "shipping box"
+    },
+    {
+      "id": "product-box",
+      "description": "Branded Product Box",
+      "imageUrl": "https://images.unsplash.com/photo-1581094432300-826825e4d2e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwcm9kdWN0JTIwYm94fGVufDB8fHx8MTc2MjU0Nzc4NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "product box"
+    }
+  ]
 }
