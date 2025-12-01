@@ -1,0 +1,73 @@
+/**
+ * Core Philosophy:
+ * This ruleset implements a secure "dropbox" or "write-only" model for a public-facing
+ * quote submission system. The primary goal is to allow anyone, including anonymous
+ * users, to submit a quote request while ensuring that once a request is submitted,
+ * it cannot be read, modified, or deleted by any client-side user. This protects the
+ * potentially sensitive contact information within each submission from being exposed
+ * to other users. All subsequent processing of these requests is expected to be
+ * handled by a trusted backend server using Admin SDK credentials, which bypass
+ * these security rules.
+ *
+ * Data Structure:
+ * The data is organized into a single top-level collection:
+ * - /quoteRequests/{quoteRequestId}: Contains individual quote submissions.
+ *
+ * Key Security Decisions:
+ * - Public Creation: Anyone can create a new document in the `quoteRequests`
+ *   collection. This supports the public submission form use case.
+ * - No Client-Side Reads: `get` and `list` operations are explicitly denied to
+ *   prevent any user from viewing submissions, including their own.
+ * - Immutability: `update` and `delete` operations are explicitly denied to
+ *   ensure that once a record is created, it cannot be tampered with from the
+ *   client.
+ * - Default Secure: The ruleset defaults to denying all access and only opens
+ *   the specific `create` permission needed for the application to function.
+ *
+ * Denormalization for Authorization:
+ * This principle is not applicable here as there is no user-specific data or
+ * ownership model. The security model is uniform for all users and data.
+ *
+ * Structural Segregation:
+ * This principle is not applicable as there is only one type of data with a
+ * single access pattern.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper Functions
+    /**
+     * Returns true if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description
+     *   Secures quote requests as a "write-only" dropbox. Anyone can submit a new
+     *   request, but no one can read, update, or delete existing requests via
+     *   the client. This protects user-submitted data like emails and names.
+     * @path
+     *   /quoteRequests/{quoteRequestId}
+     * @allow
+     *   (create) An anonymous or authenticated user successfully submits a new quote request.
+     * @deny
+     *   (get) A user attempts to read a specific quote request, even one they just submitted.
+     * @deny
+     *   (list) A user attempts to list all quote requests in the collection.
+     * @deny
+     *   (update/delete) A user attempts to modify or delete a quote request after submission.
+     * @principle
+     *   Secures a public 'dropbox' where data can be submitted but not viewed or modified by clients, protecting sensitive user-submitted information.
+     */
+    match /quoteRequests/{quoteRequestId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if true;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}
