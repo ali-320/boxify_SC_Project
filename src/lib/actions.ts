@@ -1,6 +1,8 @@
 "use server";
 
 import { z } from "zod";
+import { initializeFirebase } from "@/firebase";
+import { addDoc, collection } from "firebase/firestore";
 
 const quoteSchema = z.object({
   length: z.coerce.number().min(1, "Length is required"),
@@ -25,13 +27,30 @@ export async function submitQuote(data: unknown) {
     };
   }
 
-  // Simulate API call and data processing
-  await new Promise(resolve => setTimeout(resolve, 1500));
+  const { firestore } = initializeFirebase();
+  const quoteCollection = collection(firestore, "quoteRequests");
 
-  console.log("New quote request received:", validatedFields.data);
+  try {
+    const { length, width, height, ...rest } = validatedFields.data;
+    await addDoc(quoteCollection, {
+      ...rest,
+      productDimensions: `${length}x${width}x${height}`,
+      submissionDate: new Date().toISOString(),
+    });
 
-  return {
-    success: true,
-    message: "Thank you! Your quote request has been submitted successfully.",
-  };
+    return {
+      success: true,
+      message: "Thank you! Your quote request has been submitted successfully.",
+    };
+  } catch (error) {
+    console.error("Error submitting quote:", error);
+    let errorMessage = "An unexpected error occurred.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return {
+      success: false,
+      message: errorMessage,
+    };
+  }
 }
