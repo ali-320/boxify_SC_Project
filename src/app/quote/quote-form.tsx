@@ -44,7 +44,12 @@ export function QuoteForm() {
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
     defaultValues: {
+      length: undefined,
+      width: undefined,
+      height: undefined,
       quantity: 100,
+      material: "cardboard",
+      printing: "none",
       name: "",
       email: "",
       phone: "",
@@ -82,7 +87,7 @@ export function QuoteForm() {
 
   const prev = () => {
     if (currentStep > 0) {
-      setCurrentStep((step) => step - 1);
+      setCurrentStep((step) => step + 1);
     }
   };
 
