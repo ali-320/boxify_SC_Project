@@ -37,9 +37,9 @@ const quoteSchema = z.object({
 type QuoteFormValues = z.infer<typeof quoteSchema>;
 
 const steps = [
-  { id: 1, title: "Dimensions & Quantity", fields: ["length", "width", "height", "quantity"] },
-  { id: 2, title: "Material & Printing", fields: ["material", "printing"] },
-  { id: 3, title: "Contact & Address", fields: ["artwork", "name", "email", "phone", "companyName", "streetAddress", "city", "state", "zipCode"] },
+  { id: 0, title: "Dimensions & Quantity", fields: ["length", "width", "height", "quantity"] },
+  { id: 1, title: "Material & Printing", fields: ["material", "printing"] },
+  { id: 2, title: "Contact & Address", fields: ["artwork", "name", "email", "phone", "companyName", "streetAddress", "city", "state", "zipCode"] },
 ];
 
 export function QuoteForm({
@@ -48,8 +48,8 @@ export function QuoteForm({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   // If dimensions are in the URL, start at step 1 (index 1), otherwise start at step 0.
-  const initialStep =
-    searchParams?.length && searchParams?.width && searchParams?.height ? 1 : 0;
+  const hasDimensions = searchParams?.length && searchParams?.width && searchParams?.height;
+  const initialStep = hasDimensions ? 1 : 0;
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
@@ -242,3 +242,5 @@ export function QuoteForm({
     </Card>
   );
 }
+
+    
