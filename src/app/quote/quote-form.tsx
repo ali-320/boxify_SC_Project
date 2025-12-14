@@ -87,7 +87,7 @@ export function QuoteForm() {
 
   const prev = () => {
     if (currentStep > 0) {
-      setCurrentStep((step) => step + 1);
+      setCurrentStep((step) => step - 1);
     }
   };
 
@@ -109,21 +109,21 @@ export function QuoteForm() {
                   <FormField control={form.control} name="length" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Length (in)</FormLabel>
-                      <FormControl><Input type="number" min="1" {...field} /></FormControl>
+                      <FormControl><Input type="number" min="1" {...field} value={field.value ?? ""} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="width" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Width (in)</FormLabel>
-                      <FormControl><Input type="number" min="1" {...field} /></FormControl>
+                      <FormControl><Input type="number" min="1" {...field} value={field.value ?? ""} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="height" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Height (in)</FormLabel>
-                      <FormControl><Input type="number" min="1" {...field} /></FormControl>
+                      <FormControl><Input type="number" min="1" {...field} value={field.value ?? ""} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
