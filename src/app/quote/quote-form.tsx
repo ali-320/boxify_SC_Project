@@ -45,6 +45,9 @@ export function QuoteForm() {
     resolver: zodResolver(quoteSchema),
     defaultValues: {
       quantity: 100,
+      name: "",
+      email: "",
+      phone: "",
     },
   });
 
