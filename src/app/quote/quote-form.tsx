@@ -47,7 +47,6 @@ export function QuoteForm({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  // If dimensions are in the URL, start at step 1 (index 1), otherwise start at step 0.
   const hasDimensions = searchParams?.length && searchParams?.width && searchParams?.height;
   const initialStep = hasDimensions ? 1 : 0;
   const [currentStep, setCurrentStep] = useState(initialStep);
@@ -57,9 +56,9 @@ export function QuoteForm({
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
     defaultValues: {
-      length: Number(searchParams?.length) || undefined,
-      width: Number(searchParams?.width) || undefined,
-      height: Number(searchParams?.height) || undefined,
+      length: searchParams?.length ? Number(searchParams.length) : undefined,
+      width: searchParams?.width ? Number(searchParams.width) : undefined,
+      height: searchParams?.height ? Number(searchParams.height) : undefined,
       quantity: 100,
       material: "cardboard",
       printing: "none",
@@ -104,7 +103,6 @@ export function QuoteForm({
   };
 
   const prev = () => {
-    // If the initial step was 1, we don't want to go back to step 0
     if (currentStep > initialStep) {
       setCurrentStep((step) => step - 1);
     }
@@ -128,21 +126,21 @@ export function QuoteForm({
                   <FormField control={form.control} name="length" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Length (in)</FormLabel>
-                      <FormControl><Input type="number" min="1" {...field} value={field.value ?? ""} /></FormControl>
+                      <FormControl><Input type="number" min="1" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="width" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Width (in)</FormLabel>
-                      <FormControl><Input type="number" min="1" {...field} value={field.value ?? ""} /></FormControl>
+                      <FormControl><Input type="number" min="1" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="height" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Height (in)</FormLabel>
-                      <FormControl><Input type="number" min="1" {...field} value={field.value ?? ""} /></FormControl>
+                      <FormControl><Input type="number" min="1" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -242,5 +240,3 @@ export function QuoteForm({
     </Card>
   );
 }
-
-    
