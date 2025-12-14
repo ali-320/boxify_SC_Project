@@ -103,7 +103,7 @@ export default function ContactQuotePage() {
                       <FormField control={form.control} name="artwork" render={({ field: { onChange, value, ...rest } }) => (
                         <FormItem>
                           <FormLabel>Artwork (optional)</FormLabel>
-                          <FormControl><Input type="file" onChange={(e) => onChange(e.target.files)} {...rest} /></FormControl>
+                          <FormControl><Input type="file" onChange={(e) => onChange(e.target.files?.[0])} {...rest} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
@@ -133,7 +133,7 @@ export default function ContactQuotePage() {
                           <FormItem><FormLabel>ZIP / Postal Code</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                         )} />
                       </div>
-                    </div>
+d                    </div>
                   </CardContent>
                   <CardFooter className="flex justify-between">
                     <Button type="button" variant="outline" onClick={prev}>Back</Button>

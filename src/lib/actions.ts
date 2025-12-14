@@ -4,6 +4,8 @@
 import { z } from "zod";
 import { initializeFirebase } from "@/firebase";
 import { addDoc, collection } from "firebase/firestore";
+import { FirestorePermissionError } from "@/firebase/errors";
+import { errorEmitter } from "@/firebase/error-emitter";
 
 const quoteSchema = z.object({
   length: z.coerce.number().min(1, "Length is required"),
@@ -35,14 +37,17 @@ export async function submitQuote(data: unknown) {
 
   const { firestore } = initializeFirebase();
   const quoteCollection = collection(firestore, "quoteRequests");
-
-  try {
-    const { length, width, height, ...rest } = validatedFields.data;
-    await addDoc(quoteCollection, {
+  const { length, width, height, ...rest } = validatedFields.data;
+  const quoteData = {
       ...rest,
+      contactName: rest.name,
+      printingOptions: rest.printing,
       productDimensions: `${length}x${width}x${height}`,
       submissionDate: new Date().toISOString(),
-    });
+  };
+
+  try {
+    await addDoc(quoteCollection, quoteData);
 
     return {
       success: true,
@@ -54,9 +59,18 @@ export async function submitQuote(data: unknown) {
     if (error instanceof Error) {
       errorMessage = error.message;
     }
+    
+    // Non-blocking error emission for client-side debugging if needed
+    const permissionError = new FirestorePermissionError({
+        path: quoteCollection.path,
+        operation: 'create',
+        requestResourceData: quoteData,
+    });
+    errorEmitter.emit('permission-error', permissionError);
+
     return {
       success: false,
-      message: errorMessage,
+      message: "Failed to save quote. " + errorMessage,
     };
   }
 }
