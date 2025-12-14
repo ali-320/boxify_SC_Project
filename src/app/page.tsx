@@ -18,7 +18,6 @@ import {
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
 import { Truck, Palette, Leaf, Box } from "lucide-react";
-import { Greeting } from "@/components/Greeting";
 
 const products = PlaceHolderImages.filter((p) => p.id.includes("-box"));
 const heroImage = PlaceHolderImages.find(
@@ -77,11 +76,6 @@ const faqs = [
 export default function Home() {
   return (
     <>
-      {/* Example of using a component with props */}
-      <div className="pt-24 text-center">
-        <Greeting name="Builder" />
-      </div>
-
       {/* Hero Section */}
       <section className="relative flex h-screen w-full items-center justify-center text-center">
         {heroImage && (
