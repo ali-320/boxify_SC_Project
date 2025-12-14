@@ -1,3 +1,4 @@
+
 "use server";
 
 import { z } from "zod";
@@ -14,6 +15,11 @@ const quoteSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
+  companyName: z.string().optional(),
+  streetAddress: z.string().min(2, "Street address is required"),
+  city: z.string().min(2, "City is required"),
+  state: z.string().min(2, "State is required"),
+  zipCode: z.string().min(2, "ZIP Code is required"),
 });
 
 export async function submitQuote(data: unknown) {

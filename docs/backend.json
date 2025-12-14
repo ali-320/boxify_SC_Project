@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "QuoteRequest": {
@@ -44,6 +45,26 @@
           "type": "string",
           "description": "The date and time the quote request was submitted.",
           "format": "date-time"
+        },
+        "companyName": {
+          "type": "string",
+          "description": "The name of the company requesting the quote."
+        },
+        "streetAddress": {
+          "type": "string",
+          "description": "The street address for the quote contact."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city for the quote contact."
+        },
+        "state": {
+          "type": "string",
+          "description": "The state or province for the quote contact."
+        },
+        "zipCode": {
+          "type": "string",
+          "description": "The ZIP or postal code for the quote contact."
         }
       },
       "required": [
@@ -54,7 +75,11 @@
         "printingOptions",
         "contactName",
         "contactEmail",
-        "submissionDate"
+        "submissionDate",
+        "streetAddress",
+        "city",
+        "state",
+        "zipCode"
       ]
     }
   },

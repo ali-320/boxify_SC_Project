@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useTransition } from "react";
@@ -26,6 +27,11 @@ const quoteSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
+  companyName: z.string().optional(),
+  streetAddress: z.string().min(2, "Street address is required"),
+  city: z.string().min(2, "City is required"),
+  state: z.string().min(2, "State is required"),
+  zipCode: z.string().min(2, "ZIP Code is required"),
 });
 
 type QuoteFormValues = z.infer<typeof quoteSchema>;
@@ -33,7 +39,7 @@ type QuoteFormValues = z.infer<typeof quoteSchema>;
 const steps = [
   { id: 1, title: "Dimensions & Quantity", fields: ["length", "width", "height", "quantity"] },
   { id: 2, title: "Material & Printing", fields: ["material", "printing"] },
-  { id: 3, title: "Artwork & Contact", fields: ["artwork", "name", "email", "phone"] },
+  { id: 3, title: "Contact & Address", fields: ["artwork", "name", "email", "phone", "companyName", "streetAddress", "city", "state", "zipCode"] },
 ];
 
 export function QuoteForm() {
@@ -53,6 +59,11 @@ export function QuoteForm() {
       name: "",
       email: "",
       phone: "",
+      companyName: "",
+      streetAddress: "",
+      city: "",
+      state: "",
+      zipCode: "",
     },
   });
 
@@ -131,7 +142,7 @@ export function QuoteForm() {
                 <FormField control={form.control} name="quantity" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Quantity</FormLabel>
-                    <FormControl><Input type="number" min="1" {...field} /></FormControl>
+                    <FormControl><Input type="number" min="1" {...field} value={field.value ?? 100} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -181,12 +192,29 @@ export function QuoteForm() {
                 <FormField control={form.control} name="name" render={({ field }) => (
                   <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
+                 <FormField control={form.control} name="companyName" render={({ field }) => (
+                  <FormItem><FormLabel>Company Name (optional)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
                 <FormField control={form.control} name="email" render={({ field }) => (
                   <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="phone" render={({ field }) => (
                   <FormItem><FormLabel>Phone (optional)</FormLabel><FormControl><Input type="tel" {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
+                 <FormField control={form.control} name="streetAddress" render={({ field }) => (
+                  <FormItem><FormLabel>Street Address</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                  <FormField control={form.control} name="city" render={({ field }) => (
+                    <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="state" render={({ field }) => (
+                    <FormItem><FormLabel>State / Province</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="zipCode" render={({ field }) => (
+                    <FormItem><FormLabel>ZIP / Postal Code</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                  )} />
+                </div>
               </div>
             )}
           </CardContent>
