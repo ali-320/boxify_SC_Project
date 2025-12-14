@@ -16,13 +16,13 @@ export function Footer() {
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-            <Link href="#" className="text-sm font-medium hover:text-primary">
+            <Link href="/terms" className="text-sm font-medium hover:text-primary">
               Terms of Service
             </Link>
-            <Link href="#" className="text-sm font-medium hover:text-primary">
+            <Link href="/privacy" className="text-sm font-medium hover:text-primary">
               Privacy Policy
             </Link>
-            <Link href="/quote" className="text-sm font-medium hover:text-primary">
+            <Link href="/contact" className="text-sm font-medium hover:text-primary">
               Contact Us
             </Link>
           </div>
