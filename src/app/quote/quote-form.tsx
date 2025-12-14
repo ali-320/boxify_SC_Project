@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -48,18 +48,17 @@ export function QuoteForm({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const hasDimensions = !!(searchParams?.length && searchParams?.width && searchParams?.height);
-  const initialStep = hasDimensions ? 1 : 0;
-  const [currentStep, setCurrentStep] = useState(initialStep);
+  const [currentStep, setCurrentStep] = useState(hasDimensions ? 1 : 0);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
     defaultValues: {
-      length: searchParams?.length ? Number(searchParams.length) : 10,
-      width: searchParams?.width ? Number(searchParams.width) : 10,
-      height: searchParams?.height ? Number(searchParams.height) : 10,
-      quantity: searchParams?.quantity ? Number(searchParams.quantity) : 100,
+      length: 10,
+      width: 10,
+      height: 10,
+      quantity: 100,
       material: "cardboard",
       printing: "none",
       name: "",
@@ -73,6 +72,18 @@ export function QuoteForm({
     },
   });
 
+  useEffect(() => {
+    if (hasDimensions) {
+      form.reset({
+        ...form.getValues(),
+        length: Number(searchParams.length),
+        width: Number(searchParams.width),
+        height: Number(searchParams.height),
+      });
+    }
+  }, [searchParams, form, hasDimensions]);
+
+
   const onSubmit = (data: QuoteFormValues) => {
     startTransition(async () => {
       const { artwork, ...formData } = data;
@@ -81,7 +92,7 @@ export function QuoteForm({
       if (result.success) {
         toast({ title: "Success!", description: result.message });
         form.reset();
-        setCurrentStep(initialStep);
+        setCurrentStep(hasDimensions ? 1 : 0);
       } else {
         toast({
           variant: "destructive",
@@ -103,7 +114,7 @@ export function QuoteForm({
   };
 
   const prev = () => {
-    if (currentStep > initialStep) {
+    if (currentStep > (hasDimensions ? 1 : 0)) {
       setCurrentStep((step) => step - 1);
     }
   };
@@ -225,7 +236,7 @@ export function QuoteForm({
             )}
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button type="button" variant="outline" onClick={prev} disabled={currentStep === initialStep}>Back</Button>
+            <Button type="button" variant="outline" onClick={prev} disabled={currentStep === (hasDimensions ? 1 : 0)}>Back</Button>
             {currentStep === steps.length - 1 ? (
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
