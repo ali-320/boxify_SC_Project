@@ -42,7 +42,11 @@ const steps = [
   { id: 3, title: "Contact & Address", fields: ["artwork", "name", "email", "phone", "companyName", "streetAddress", "city", "state", "zipCode"] },
 ];
 
-export function QuoteForm() {
+export function QuoteForm({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
@@ -50,9 +54,9 @@ export function QuoteForm() {
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
     defaultValues: {
-      length: undefined,
-      width: undefined,
-      height: undefined,
+      length: Number(searchParams?.length) || undefined,
+      width: Number(searchParams?.width) || undefined,
+      height: Number(searchParams?.height) || undefined,
       quantity: 100,
       material: "cardboard",
       printing: "none",
@@ -98,7 +102,7 @@ export function QuoteForm() {
 
   const prev = () => {
     if (currentStep > 0) {
-      setCurrentStep((step) => step - 1);
+      setCurrentStep((step) => step + 1);
     }
   };
 

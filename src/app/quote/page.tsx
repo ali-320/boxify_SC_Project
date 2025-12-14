@@ -1,6 +1,10 @@
 import { QuoteForm } from "./quote-form";
 
-export default function QuotePage() {
+export default function QuotePage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   return (
     <div className="pt-20">
       <section className="py-12 md:py-24">
@@ -15,7 +19,7 @@ export default function QuotePage() {
             </p>
           </div>
           <div className="mx-auto mt-12 max-w-3xl">
-            <QuoteForm />
+            <QuoteForm searchParams={searchParams} />
           </div>
         </div>
       </section>

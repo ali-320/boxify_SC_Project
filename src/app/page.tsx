@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -16,7 +17,7 @@ import {
 } from "@/components/ui/accordion";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
-import { Truck, Palette, Leaf } from "lucide-react";
+import { Truck, Palette, Leaf, Box } from "lucide-react";
 
 const products = PlaceHolderImages.filter((p) => p.id.includes("-box"));
 const heroImage = PlaceHolderImages.find(
@@ -110,19 +111,19 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-5xl">
-                Our Featured Products
+                Choose a Box Style
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Discover our range of high-quality, customizable boxes perfect
-                for any need.
+                Select a standard size to get started, or request a fully
+                custom size on our quote page.
               </p>
             </div>
           </div>
-          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 py-12 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
               <Card
                 key={product.id}
-                className="overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1"
+                className="flex flex-col overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1"
               >
                 <CardContent className="p-6">
                   <Image
@@ -133,12 +134,29 @@ export default function Home() {
                     className="h-auto w-full rounded-md object-cover"
                     data-ai-hint={product.imageHint}
                   />
-                  <CardHeader className="px-0 pb-0 pt-4">
+                  <CardHeader className="px-0 pb-2 pt-4">
                     <CardTitle className="font-headline text-xl">
                       {product.description}
                     </CardTitle>
                   </CardHeader>
+                  {product.length && (
+                    <div className="flex items-center text-muted-foreground">
+                      <Box className="mr-2 h-5 w-5" />
+                      <span>
+                        {product.length}" x {product.width}" x {product.height}"
+                      </span>
+                    </div>
+                  )}
                 </CardContent>
+                <CardFooter className="mt-auto p-6 pt-0">
+                  <Button asChild className="w-full">
+                    <Link
+                      href={`/quote?length=${product.length}&width=${product.width}&height=${product.height}`}
+                    >
+                      Get a Quote
+                    </Link>
+                  </Button>
+                </CardFooter>
               </Card>
             ))}
           </div>
