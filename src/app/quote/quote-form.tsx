@@ -47,7 +47,10 @@ export function QuoteForm({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const [currentStep, setCurrentStep] = useState(0);
+  // If dimensions are in the URL, start at step 1 (index 1), otherwise start at step 0.
+  const initialStep =
+    searchParams?.length && searchParams?.width && searchParams?.height ? 1 : 0;
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
@@ -79,7 +82,7 @@ export function QuoteForm({
       if (result.success) {
         toast({ title: "Success!", description: result.message });
         form.reset();
-        setCurrentStep(0);
+        setCurrentStep(initialStep);
       } else {
         toast({
           variant: "destructive",
@@ -101,8 +104,9 @@ export function QuoteForm({
   };
 
   const prev = () => {
-    if (currentStep > 0) {
-      setCurrentStep((step) => step + 1);
+    // If the initial step was 1, we don't want to go back to step 0
+    if (currentStep > initialStep) {
+      setCurrentStep((step) => step - 1);
     }
   };
 
@@ -223,7 +227,7 @@ export function QuoteForm({
             )}
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button type="button" variant="outline" onClick={prev} disabled={currentStep === 0}>Back</Button>
+            <Button type="button" variant="outline" onClick={prev} disabled={currentStep === initialStep}>Back</Button>
             {currentStep === steps.length - 1 ? (
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
