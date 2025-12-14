@@ -56,9 +56,9 @@ export function QuoteForm({
   const form = useForm<QuoteFormValues>({
     resolver: zodResolver(quoteSchema),
     defaultValues: {
-      length: searchParams?.length ? Number(searchParams.length) : undefined,
-      width: searchParams?.width ? Number(searchParams.width) : undefined,
-      height: searchParams?.height ? Number(searchParams.height) : undefined,
+      length: searchParams?.length ? Number(searchParams.length) : 10,
+      width: searchParams?.width ? Number(searchParams.width) : 10,
+      height: searchParams?.height ? Number(searchParams.height) : 10,
       quantity: 100,
       material: "cardboard",
       printing: "none",
@@ -240,5 +240,3 @@ export function QuoteForm({
     </Card>
   );
 }
-
-    
