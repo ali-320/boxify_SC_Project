@@ -47,7 +47,7 @@ export function QuoteForm({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const hasDimensions = searchParams?.length && searchParams?.width && searchParams?.height;
+  const hasDimensions = !!(searchParams?.length && searchParams?.width && searchParams?.height);
   const initialStep = hasDimensions ? 1 : 0;
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [isPending, startTransition] = useTransition();
@@ -59,7 +59,7 @@ export function QuoteForm({
       length: searchParams?.length ? Number(searchParams.length) : 10,
       width: searchParams?.width ? Number(searchParams.width) : 10,
       height: searchParams?.height ? Number(searchParams.height) : 10,
-      quantity: 100,
+      quantity: searchParams?.quantity ? Number(searchParams.quantity) : 100,
       material: "cardboard",
       printing: "none",
       name: "",
@@ -148,7 +148,7 @@ export function QuoteForm({
                 <FormField control={form.control} name="quantity" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Quantity</FormLabel>
-                    <FormControl><Input type="number" min="1" {...field} value={field.value ?? 100} /></FormControl>
+                    <FormControl><Input type="number" min="1" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
