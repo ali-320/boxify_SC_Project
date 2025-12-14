@@ -151,7 +151,7 @@ export default function Home() {
                 <CardFooter className="mt-auto p-6 pt-0">
                   <Button asChild className="w-full">
                     <Link
-                      href={`/quote/material?length=${product.length}&width=${product.width}&height=${product.height}`}
+                      href={`/quote/dimensions?length=${product.length}&width=${product.width}&height=${product.height}`}
                     >
                       Get a Quote
                     </Link>

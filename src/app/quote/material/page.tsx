@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -21,7 +21,6 @@ type MaterialFormValues = z.infer<typeof materialSchema>;
 
 export default function MaterialPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const form = useForm<MaterialFormValues>({
     resolver: zodResolver(materialSchema),
@@ -38,29 +37,6 @@ export default function MaterialPage() {
       });
     }
   }, [form]);
-
-
-  // Handle pre-filled dimensions from product page
-  useEffect(() => {
-    const length = searchParams.get("length");
-    const width = searchParams.get("width");
-    const height = searchParams.get("height");
-
-    if (length && width && height) {
-      if (typeof window !== "undefined") {
-        const storedData = localStorage.getItem("quoteFormData");
-        const existingData = storedData ? JSON.parse(storedData) : {};
-        const newData = {
-          ...existingData,
-          length: Number(length),
-          width: Number(width),
-          height: Number(height),
-          quantity: existingData.quantity || 100, // keep existing or default quantity
-        };
-        localStorage.setItem("quoteFormData", JSON.stringify(newData));
-      }
-    }
-  }, [searchParams]);
 
   const onSubmit = (data: MaterialFormValues) => {
     if (typeof window !== "undefined") {

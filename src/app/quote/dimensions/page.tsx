@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -23,6 +23,7 @@ type DimensionsFormValues = z.infer<typeof dimensionsSchema>;
 
 export default function DimensionsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   
   const form = useForm<DimensionsFormValues>({
     resolver: zodResolver(dimensionsSchema),
@@ -33,14 +34,21 @@ export default function DimensionsPage() {
     if (typeof window !== "undefined") {
       const storedData = localStorage.getItem("quoteFormData");
       const data = storedData ? JSON.parse(storedData) : {};
+      
+      // Get values from URL, or use stored data, or use default
+      const length = searchParams.get("length") || data.length || 10;
+      const width = searchParams.get("width") || data.width || 10;
+      const height = searchParams.get("height") || data.height || 10;
+      const quantity = data.quantity || 100;
+
       form.reset({
-        length: data.length || 10,
-        width: data.width || 10,
-        height: data.height || 10,
-        quantity: data.quantity || 100,
+        length: Number(length),
+        width: Number(width),
+        height: Number(height),
+        quantity: Number(quantity),
       });
     }
-  }, [form]);
+  }, [form, searchParams]);
 
   const onSubmit = (data: DimensionsFormValues) => {
     if (typeof window !== "undefined") {
