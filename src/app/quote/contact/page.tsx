@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
@@ -6,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
+import { collection } from "firebase/firestore";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +15,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { submitQuote } from "@/lib/actions";
+import { validateQuote } from "@/lib/actions";
+import { useFirestore } from "@/firebase";
+import { addDocumentNonBlocking } from "@/firebase/non-blocking-updates";
 
 const contactSchema = z.object({
   artwork: z.any().optional(),
@@ -31,14 +35,13 @@ type ContactFormValues = z.infer<typeof contactSchema>;
 
 export default function ContactQuotePage() {
   const router = useRouter();
+  const firestore = useFirestore();
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
-    defaultValues: {
-      name: "", email: "", phone: "", companyName: "", streetAddress: "", city: "", state: "", zipCode: ""
-    },
+    defaultValues: {},
   });
   
   useEffect(() => {
@@ -61,21 +64,49 @@ export default function ContactQuotePage() {
 
   const onSubmit = (data: ContactFormValues) => {
     startTransition(async () => {
+      if (typeof window === "undefined") return;
+      
       const storedData = localStorage.getItem("quoteFormData");
       const allData = { ...(storedData ? JSON.parse(storedData) : {}), ...data };
       
-      const { artwork, ...formData } = allData;
-      const result = await submitQuote(formData);
+      const result = await validateQuote(allData);
 
-      if (result.success) {
-        toast({ title: "Success!", description: result.message });
-        localStorage.removeItem("quoteFormData");
-        router.push("/");
-      } else {
+      if (!result.success) {
         toast({
           variant: "destructive",
-          title: "Error",
-          description: result.message || "An unexpected error occurred.",
+          title: "Validation Error",
+          description: result.message || "Please check the form for errors.",
+        });
+        // Here you might want to set form errors using form.setError
+        return;
+      }
+
+      // If validation is successful, proceed with Firestore submission on the client
+      try {
+        const quoteCollection = collection(firestore, "quoteRequests");
+        const { length, width, height, ...rest } = result.data;
+        const quoteData = {
+          ...rest,
+          contactName: rest.name,
+          printingOptions: rest.printing,
+          productDimensions: `${length}x${width}x${height}`,
+          submissionDate: new Date().toISOString(),
+        };
+
+        // We are not awaiting this, so the UI is not blocked.
+        // Error handling is done via the global error emitter.
+        addDocumentNonBlocking(quoteCollection, quoteData);
+
+        toast({ title: "Success!", description: "Your quote has been submitted." });
+        localStorage.removeItem("quoteFormData");
+        router.push("/");
+
+      } catch (error) {
+        console.error("Client-side Firestore error:", error);
+        toast({
+          variant: "destructive",
+          title: "Submission Error",
+          description: "Could not submit quote. Please try again.",
         });
       }
     });
@@ -133,7 +164,7 @@ export default function ContactQuotePage() {
                           <FormItem><FormLabel>ZIP / Postal Code</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                         )} />
                       </div>
-d                    </div>
+                    </div>
                   </CardContent>
                   <CardFooter className="flex justify-between">
                     <Button type="button" variant="outline" onClick={prev}>Back</Button>

@@ -2,10 +2,6 @@
 "use server";
 
 import { z } from "zod";
-import { initializeFirebase } from "@/firebase";
-import { addDoc, collection } from "firebase/firestore";
-import { FirestorePermissionError } from "@/firebase/errors";
-import { errorEmitter } from "@/firebase/error-emitter";
 
 const quoteSchema = z.object({
   length: z.coerce.number().min(1, "Length is required"),
@@ -22,9 +18,10 @@ const quoteSchema = z.object({
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
   zipCode: z.string().min(2, "ZIP Code is required"),
+  artwork: z.any().optional(),
 });
 
-export async function submitQuote(data: unknown) {
+export async function validateQuote(data: unknown) {
   const validatedFields = quoteSchema.safeParse(data);
 
   if (!validatedFields.success) {
@@ -34,43 +31,9 @@ export async function submitQuote(data: unknown) {
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-
-  const { firestore } = initializeFirebase();
-  const quoteCollection = collection(firestore, "quoteRequests");
-  const { length, width, height, ...rest } = validatedFields.data;
-  const quoteData = {
-      ...rest,
-      contactName: rest.name,
-      printingOptions: rest.printing,
-      productDimensions: `${length}x${width}x${height}`,
-      submissionDate: new Date().toISOString(),
-  };
-
-  try {
-    await addDoc(quoteCollection, quoteData);
-
-    return {
+  
+  return {
       success: true,
-      message: "Thank you! Your quote request has been submitted successfully.",
-    };
-  } catch (error) {
-    console.error("Error submitting quote:", error);
-    let errorMessage = "An unexpected error occurred.";
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    
-    // Non-blocking error emission for client-side debugging if needed
-    const permissionError = new FirestorePermissionError({
-        path: quoteCollection.path,
-        operation: 'create',
-        requestResourceData: quoteData,
-    });
-    errorEmitter.emit('permission-error', permissionError);
-
-    return {
-      success: false,
-      message: "Failed to save quote. " + errorMessage,
-    };
+      data: validatedFields.data,
   }
 }
