@@ -36,15 +36,16 @@ export default function ContactQuotePage() {
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
-    defaultValues: () => {
-      if (typeof window === "undefined") {
-        return {
-          name: "", email: "", phone: "", companyName: "", streetAddress: "", city: "", state: "", zipCode: ""
-        };
-      }
+    defaultValues: {
+      name: "", email: "", phone: "", companyName: "", streetAddress: "", city: "", state: "", zipCode: ""
+    },
+  });
+  
+  useEffect(() => {
+    if (typeof window !== "undefined") {
       const storedData = localStorage.getItem("quoteFormData");
       const data = storedData ? JSON.parse(storedData) : {};
-      return {
+      form.reset({
         name: data.name || "",
         email: data.email || "",
         phone: data.phone || "",
@@ -53,13 +54,9 @@ export default function ContactQuotePage() {
         city: data.city || "",
         state: data.state || "",
         zipCode: data.zipCode || "",
-      };
-    },
-  });
-  
-  useEffect(() => {
-    form.reset(form.formState.defaultValues)
-  }, [form])
+      });
+    }
+  }, [form]);
 
 
   const onSubmit = (data: ContactFormValues) => {

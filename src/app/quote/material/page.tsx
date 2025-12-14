@@ -25,21 +25,18 @@ export default function MaterialPage() {
 
   const form = useForm<MaterialFormValues>({
     resolver: zodResolver(materialSchema),
-    defaultValues: () => {
-      if (typeof window === "undefined") {
-        return { material: "cardboard", printing: "none" };
-      }
-      const storedData = localStorage.getItem("quoteFormData");
-      const data = storedData ? JSON.parse(storedData) : {};
-      return {
-        material: data.material || "cardboard",
-        printing: data.printing || "none",
-      };
-    },
+    defaultValues: { material: "cardboard", printing: "none" },
   });
   
   useEffect(() => {
-    form.reset(form.formState.defaultValues);
+    if (typeof window !== "undefined") {
+      const storedData = localStorage.getItem("quoteFormData");
+      const data = storedData ? JSON.parse(storedData) : {};
+      form.reset({
+        material: data.material || "cardboard",
+        printing: data.printing || "none",
+      });
+    }
   }, [form]);
 
 

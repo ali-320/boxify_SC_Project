@@ -26,23 +26,20 @@ export default function DimensionsPage() {
   
   const form = useForm<DimensionsFormValues>({
     resolver: zodResolver(dimensionsSchema),
-    defaultValues: () => {
-      if (typeof window === "undefined") {
-        return { length: 10, width: 10, height: 10, quantity: 100 };
-      }
+    defaultValues: { length: 10, width: 10, height: 10, quantity: 100 },
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
       const storedData = localStorage.getItem("quoteFormData");
       const data = storedData ? JSON.parse(storedData) : {};
-      return {
+      form.reset({
         length: data.length || 10,
         width: data.width || 10,
         height: data.height || 10,
         quantity: data.quantity || 100,
-      };
-    },
-  });
-
-  useEffect(() => {
-    form.reset(form.formState.defaultValues);
+      });
+    }
   }, [form]);
 
   const onSubmit = (data: DimensionsFormValues) => {
