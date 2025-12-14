@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import type { ImagePlaceholder } from "@/lib/placeholder-images";
 import { Truck, Palette, Leaf } from "lucide-react";
@@ -34,6 +41,34 @@ const benefits = [
     title: "Eco-Friendly Options",
     description:
       "Choose from a range of sustainable materials to create packaging that's better for the planet.",
+  },
+];
+
+const faqs = [
+  {
+    question: "What is the minimum order quantity?",
+    answer:
+      "Our minimum order quantity varies depending on the product, but typically starts at 50 units. For specific details, please fill out our quote request form, and one of our specialists will get back to you with precise information for your project.",
+  },
+  {
+    question: "How long does it take to get my custom boxes?",
+    answer:
+      "Production time is typically between 10-15 business days after your proof is approved. Shipping times vary based on your location. We do offer expedited options if you're on a tight deadline.",
+  },
+  {
+    question: "Can I get a sample before placing a full order?",
+    answer:
+      "Yes, we can provide a sample of your custom box. There may be a small fee for a custom-printed sample, which is often credited back to you if you proceed with a full production order. Please mention this in your quote request.",
+  },
+  {
+    question: "What kind of artwork files do you accept?",
+    answer:
+      "We accept vector files such as AI (Adobe Illustrator), PDF, and EPS for the best printing quality. If you don't have vector artwork, our design team can assist you in converting your logo or design for a small fee.",
+  },
+  {
+    question: "Do you offer design services?",
+    answer:
+      "Absolutely! Whether you have a complete design or just an idea, our in-house design team can help you create the perfect packaging for your product. Contact us to learn more about our design service packages.",
   },
 ];
 
@@ -139,6 +174,37 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-12 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-5xl">
+                Frequently Asked Questions
+              </h2>
+              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                Have questions? We've got answers. If you don't find what you're
+                looking for, feel free to contact us.
+              </p>
+            </div>
+          </div>
+          <div className="mx-auto mt-12 max-w-3xl">
+            <Accordion type="single" collapsible className="w-full">
+              {faqs.map((faq, index) => (
+                <AccordionItem key={index} value={`item-${index}`}>
+                  <AccordionTrigger className="text-left text-lg font-semibold hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-base text-muted-foreground">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </div>
       </section>
