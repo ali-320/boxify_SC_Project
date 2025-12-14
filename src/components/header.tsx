@@ -32,7 +32,7 @@ export function Header() {
             </Link>
           ))}
           <Button asChild className="bg-accent hover:bg-accent/90">
-            <Link href="/quote">Get a Quote</Link>
+            <Link href="/quote/dimensions">Get a Quote</Link>
           </Button>
         </nav>
         <div className="md:hidden">
@@ -64,7 +64,7 @@ export function Header() {
                   </Link>
                 ))}
                 <Button asChild size="lg" className="mt-4 bg-accent hover:bg-accent/90">
-                  <Link href="/quote" onClick={() => setIsOpen(false)}>
+                  <Link href="/quote/dimensions" onClick={() => setIsOpen(false)}>
                     Get a Quote
                   </Link>
                 </Button>

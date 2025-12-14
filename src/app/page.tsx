@@ -99,7 +99,7 @@ export default function Home() {
           </p>
           <div className="mt-8">
             <Button size="lg" asChild className="bg-accent hover:bg-accent/90">
-              <Link href="/quote">Get Your Instant Quote</Link>
+              <Link href="/quote/dimensions">Get Your Instant Quote</Link>
             </Button>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function Home() {
                 <CardFooter className="mt-auto p-6 pt-0">
                   <Button asChild className="w-full">
                     <Link
-                      href={`/quote?length=${product.length}&width=${product.width}&height=${product.height}`}
+                      href={`/quote/material?length=${product.length}&width=${product.width}&height=${product.height}`}
                     >
                       Get a Quote
                     </Link>
