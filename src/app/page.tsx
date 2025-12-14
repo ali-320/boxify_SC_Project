@@ -47,7 +47,7 @@ const benefits = [
 
 const faqs = [
   {
-    question: "What is the minimum order quantity?",
+    question: "What is the minimum order quantity for custom printed boxes?",
     answer:
       "Our minimum order quantity varies depending on the product, but typically starts at 50 units. For specific details, please fill out our quote request form, and one of our specialists will get back to you with precise information for your project.",
   },
@@ -62,14 +62,14 @@ const faqs = [
       "Yes, we can provide a sample of your custom box. There may be a small fee for a custom-printed sample, which is often credited back to you if you proceed with a full production order. Please mention this in your quote request.",
   },
   {
-    question: "What kind of artwork files do you accept?",
+    question: "What kind of artwork files do you accept for custom packaging?",
     answer:
       "We accept vector files such as AI (Adobe Illustrator), PDF, and EPS for the best printing quality. If you don't have vector artwork, our design team can assist you in converting your logo or design for a small fee.",
   },
   {
-    question: "Do you offer design services?",
+    question: "Do you offer design services for branded packaging?",
     answer:
-      "Absolutely! Whether you have a complete design or just an idea, our in-house design team can help you create the perfect packaging for your product. Contact us to learn more about our design service packages.",
+      "Absolutely! Whether you have a complete design or just an idea, our in-house design team can help you create the perfect branded packaging for your product. Contact us to learn more about our design service packages.",
   },
 ];
 
@@ -91,7 +91,7 @@ export default function Home() {
         <div className="absolute inset-0 z-10 bg-black/50" />
         <div className="container relative z-20 px-4 text-white md:px-6">
           <h1 className="text-4xl font-headline font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-            Custom Boxes, Simplified.
+            Your Premier Box Packaging Company
           </h1>
           <p className="mx-auto mt-4 max-w-[700px] text-lg text-gray-200 md:text-xl">
             High-quality, custom-branded packaging solutions for businesses of
@@ -114,8 +114,9 @@ export default function Home() {
                 Choose a Box Style
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Select a standard size to get started, or request a fully
-                custom size on our quote page.
+                Our box packaging company offers a variety of styles. Select a
+                standard size to get started, or request a fully custom size for
+                your branded packaging on our quote page.
               </p>
             </div>
           </div>
@@ -169,10 +170,11 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-headline font-bold tracking-tighter sm:text-5xl">
-                Why Choose Boxify?
+                Why Choose Boxify Packaging Company?
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                We're committed to providing the best service and quality in the
+                As a top-tier box packaging company, we're committed to
+                providing the best service and quality in the custom packaging
                 industry.
               </p>
             </div>
@@ -205,8 +207,9 @@ export default function Home() {
                 Frequently Asked Questions
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Have questions? We've got answers. If you don't find what you're
-                looking for, feel free to contact us.
+                Have questions about our custom box packaging? We've got
+                answers. If you don't find what you're looking for, feel free
+                to contact us.
               </p>
             </div>
           </div>

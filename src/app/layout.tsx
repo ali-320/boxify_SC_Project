@@ -6,8 +6,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from "@/firebase";
 
 export const metadata: Metadata = {
-  title: "Boxify",
-  description: "Custom boxes, simplified.",
+  title: "Boxify | Custom Box Packaging Company",
+  description:
+    "Boxify is a leading box packaging company specializing in custom printed boxes, mailers, and shipping solutions for businesses. Get an instant quote today.",
 };
 
 export default function RootLayout({

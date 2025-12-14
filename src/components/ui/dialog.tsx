@@ -29,6 +29,30 @@ const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+/**
+ * DialogContent
+ * -----------------
+ * Main content area of a modal dialog.
+ *
+ * @requires DialogPortal, DialogOverlay
+ * @renders children inside a centered, fixed container
+ * @layout
+ *   - fixed position, centered (top-[50%], left-[50%], translate -50%)
+ *   - width: w-full, max-width: max-w-lg
+ *   - padding: p-6
+ *   - rounded corners: sm:rounded-lg
+ *   - shadow: shadow-lg
+ *   - grid layout with gap-4
+ * @effects
+ *   - mounts content inside a portal
+ *   - renders overlay automatically
+ *   - provides fade, zoom, and slide animations
+ *   - includes a close button with hover/focus effects
+ *   - accessible (sr-only label, focus management)
+ * @default
+ *   - z-index: 50
+ *   - animations: duration-200
+ */
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
