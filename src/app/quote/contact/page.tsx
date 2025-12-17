@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useTransition, useEffect, ChangeEvent, DragEvent, useRef } from "react";
@@ -156,6 +155,9 @@ export default function ContactQuotePage() {
       }
 
       try {
+        if (!firestore) {
+          throw new Error("Firestore is not initialized.");
+        }
         const quoteCollection = collection(firestore, "quoteRequests");
         const { length, width, height, ...rest } = result.data;
         const quoteData = {
@@ -246,7 +248,7 @@ export default function ContactQuotePage() {
                       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
                         <FormField control={form.control} name="city" render={({ field }) => (<FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
                         <FormField control={form.control} name="state" render={({ field }) => (<FormItem><FormLabel>State / Province</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
-                        <FormField control={form.control} name="zipCode" render={({ field }) => (<FormItem><FormLabel>ZIP / Postal Code</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormMessage /></FormItem>)} />
+                        <FormField control={form.control} name="zipCode" render={({ field }) => (<FormItem><FormLabel>ZIP / Postal Code</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
                       </div>
                     </div>
                   </CardContent>
