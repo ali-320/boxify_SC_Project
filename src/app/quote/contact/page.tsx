@@ -200,31 +200,34 @@ export default function ContactQuotePage() {
                     <div className="grid gap-6">
                       <FormItem>
                         <FormLabel>Artwork (optional)</FormLabel>
-                        {!fileName ? (
-                          <div
-                            onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
-                            onClick={() => fileInputRef.current?.click()}
-                            className={cn(
-                              "relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center transition-colors duration-200",
-                              isDragging ? "border-primary bg-primary/10" : "border-input hover:bg-accent"
-                            )}
-                          >
-                            <UploadCloud className="mb-4 h-10 w-10 text-muted-foreground" />
-                            <p className="font-semibold">Click to upload or drag and drop</p>
-                            <p className="text-sm text-muted-foreground">SVG, PNG, JPG or GIF (max {MAX_FILE_SIZE_MB}MB)</p>
-                            <Input ref={fileInputRef} type="file" onChange={handleFileChange} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" accept={ALLOWED_TYPES.join(',')} />
-                          </div>
+                        {!fileName || isUploading ? (
+                          <>
+                          {!isUploading ? (
+                            <div
+                              onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
+                              onClick={() => fileInputRef.current?.click()}
+                              className={cn(
+                                "relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center transition-colors duration-200",
+                                isDragging ? "border-primary bg-primary/10" : "border-input hover:bg-accent"
+                              )}
+                            >
+                              <UploadCloud className="mb-4 h-10 w-10 text-muted-foreground" />
+                              <p className="font-semibold">Click to upload or drag and drop</p>
+                              <p className="text-sm text-muted-foreground">SVG, PNG, JPG or GIF (max {MAX_FILE_SIZE_MB}MB)</p>
+                              <Input ref={fileInputRef} type="file" onChange={handleFileChange} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" accept={ALLOWED_TYPES.join(',')} />
+                            </div>
+                          ) : (
+                            <div className="rounded-lg border border-border p-4">
+                              <div className="flex items-center justify-between">
+                                <p className="text-sm font-medium">{fileName}</p>
+                                <Button variant="ghost" size="icon" onClick={cancelUpload}><X className="h-4 w-4" /></Button>
+                              </div>
+                              <Progress value={uploadProgress} className="mt-2" />
+                            </div>
+                          )}
+                          </>
                         ) : (
                           <div className="rounded-lg border border-border p-4">
-                            {isUploading && (
-                              <div>
-                                <div className="flex items-center justify-between">
-                                  <p className="text-sm font-medium">{fileName}</p>
-                                  <Button variant="ghost" size="icon" onClick={cancelUpload}><X className="h-4 w-4" /></Button>
-                                </div>
-                                <Progress value={uploadProgress} className="mt-2" />
-                              </div>
-                            )}
                             {downloadURL && (
                               <div className="flex items-center gap-4">
                                 <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
