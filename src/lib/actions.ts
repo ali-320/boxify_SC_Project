@@ -18,7 +18,7 @@ const quoteSchema = z.object({
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
   zipCode: z.string().min(2, "ZIP Code is required"),
-  artworkFileUrl: z.string().url().optional(),
+  artworkDataUrl: z.string().optional(),
 });
 
 export async function validateQuote(data: unknown) {
@@ -37,3 +37,5 @@ export async function validateQuote(data: unknown) {
       data: validatedFields.data,
   }
 }
+
+    

@@ -18,7 +18,6 @@ import { useToast } from "@/hooks/use-toast";
 import { validateQuote } from "@/lib/actions";
 import { useFirestore } from "@/firebase";
 import { addDocumentNonBlocking } from "@/firebase/non-blocking-updates";
-import { useUploadFile } from "@/hooks/use-upload-file";
 import { cn } from "@/lib/utils";
 
 const contactSchema = z.object({
@@ -30,12 +29,12 @@ const contactSchema = z.object({
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
   zipCode: z.string().min(2, "ZIP Code is required"),
-  artworkFileUrl: z.string().url().optional(),
+  artworkDataUrl: z.string().optional(),
 });
 
 type ContactFormValues = z.infer<typeof contactSchema>;
 
-const MAX_FILE_SIZE_MB = 5;
+const MAX_FILE_SIZE_MB = 1;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/svg+xml"];
 
@@ -44,9 +43,8 @@ export default function ContactQuotePage() {
   const firestore = useFirestore();
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
-  const { uploadFile, uploadProgress, downloadURL, isUploading, error: uploadError, cancelUpload } = useUploadFile();
   const [isDragging, setIsDragging] = useState(false);
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [artworkPreview, setArtworkPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ContactFormValues>({
@@ -67,33 +65,13 @@ export default function ContactQuotePage() {
         city: data.city || "",
         state: data.state || "",
         zipCode: data.zipCode || "",
-        artworkFileUrl: data.artworkFileUrl || undefined,
+        artworkDataUrl: data.artworkDataUrl || undefined,
       });
-      if (data.artworkFileUrl) {
-        setFileName("Uploaded Artwork");
+      if (data.artworkDataUrl) {
+        setArtworkPreview(data.artworkDataUrl);
       }
     }
   }, [form]);
-
-  useEffect(() => {
-    if (downloadURL) {
-      form.setValue("artworkFileUrl", downloadURL);
-      const storedData = JSON.parse(localStorage.getItem("quoteFormData") || "{}");
-      storedData.artworkFileUrl = downloadURL;
-      localStorage.setItem("quoteFormData", JSON.stringify(storedData));
-    }
-  }, [downloadURL, form]);
-
-  useEffect(() => {
-    if (uploadError) {
-      toast({
-        variant: "destructive",
-        title: "Upload Failed",
-        description: uploadError.message,
-      });
-      setFileName(null);
-    }
-  }, [uploadError, toast]);
 
   const handleFileSelect = (file: File) => {
     if (!ALLOWED_TYPES.includes(file.type)) {
@@ -104,8 +82,21 @@ export default function ContactQuotePage() {
       toast({ variant: "destructive", title: "File Too Large", description: `File must be smaller than ${MAX_FILE_SIZE_MB}MB.` });
       return;
     }
-    setFileName(file.name);
-    uploadFile(file, "artwork-submissions");
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      setArtworkPreview(dataUrl);
+      form.setValue("artworkDataUrl", dataUrl);
+      
+      const storedData = JSON.parse(localStorage.getItem("quoteFormData") || "{}");
+      storedData.artworkDataUrl = dataUrl;
+      localStorage.setItem("quoteFormData", JSON.stringify(storedData));
+    };
+    reader.onerror = () => {
+        toast({ variant: "destructive", title: "File Read Error", description: "Could not read the selected file." });
+    }
+    reader.readAsDataURL(file);
   };
 
   const handleDrag = (e: DragEvent<HTMLDivElement>) => {
@@ -134,11 +125,10 @@ export default function ContactQuotePage() {
   };
 
   const removeArtwork = () => {
-    cancelUpload();
-    setFileName(null);
-    form.setValue("artworkFileUrl", undefined);
+    setArtworkPreview(null);
+    form.setValue("artworkDataUrl", undefined);
     const storedData = JSON.parse(localStorage.getItem("quoteFormData") || "{}");
-    delete storedData.artworkFileUrl;
+    delete storedData.artworkDataUrl;
     localStorage.setItem("quoteFormData", JSON.stringify(storedData));
   };
 
@@ -200,9 +190,7 @@ export default function ContactQuotePage() {
                     <div className="grid gap-6">
                       <FormItem>
                         <FormLabel>Artwork (optional)</FormLabel>
-                        {!fileName || isUploading ? (
-                          <>
-                          {!isUploading ? (
+                        {!artworkPreview ? (
                             <div
                               onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
                               onClick={() => fileInputRef.current?.click()}
@@ -216,30 +204,18 @@ export default function ContactQuotePage() {
                               <p className="text-sm text-muted-foreground">SVG, PNG, JPG or GIF (max {MAX_FILE_SIZE_MB}MB)</p>
                               <Input ref={fileInputRef} type="file" onChange={handleFileChange} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" accept={ALLOWED_TYPES.join(',')} />
                             </div>
-                          ) : (
-                            <div className="rounded-lg border border-border p-4">
-                              <div className="flex items-center justify-between">
-                                <p className="text-sm font-medium">{fileName}</p>
-                                <Button variant="ghost" size="icon" onClick={cancelUpload}><X className="h-4 w-4" /></Button>
-                              </div>
-                              <Progress value={uploadProgress} className="mt-2" />
-                            </div>
-                          )}
-                          </>
                         ) : (
                           <div className="rounded-lg border border-border p-4">
-                            {downloadURL && (
-                              <div className="flex items-center gap-4">
-                                <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
-                                  {downloadURL.includes('.svg') ? <FileIcon className="h-full w-full text-muted-foreground" /> : <Image src={downloadURL} alt="Artwork preview" fill className="object-cover" />}
-                                </div>
-                                <div className="flex-grow">
-                                  <p className="font-medium">{fileName}</p>
-                                  <a href={downloadURL} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">View Uploaded File</a>
-                                </div>
-                                <Button variant="ghost" size="icon" onClick={removeArtwork}><X className="h-4 w-4 text-destructive" /></Button>
+                            <div className="flex items-center gap-4">
+                              <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
+                                {artworkPreview.startsWith('data:image/svg') ? <FileIcon className="h-full w-full text-muted-foreground" /> : <Image src={artworkPreview} alt="Artwork preview" fill className="object-cover" />}
                               </div>
-                            )}
+                              <div className="flex-grow">
+                                <p className="font-medium">Artwork Preview</p>
+                                <a href={artworkPreview} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">View Full Size</a>
+                              </div>
+                              <Button variant="ghost" size="icon" onClick={removeArtwork}><X className="h-4 w-4 text-destructive" /></Button>
+                            </div>
                           </div>
                         )}
                       </FormItem>
@@ -257,8 +233,8 @@ export default function ContactQuotePage() {
                   </CardContent>
                   <CardFooter className="flex justify-between">
                     <Button type="button" variant="outline" onClick={prev}>Back</Button>
-                    <Button type="submit" disabled={isPending || isUploading}>
-                      {(isPending || isUploading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    <Button type="submit" disabled={isPending}>
+                      {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Submit Quote
                     </Button>
                   </CardFooter>
@@ -271,3 +247,5 @@ export default function ContactQuotePage() {
     </div>
   );
 }
+
+    
