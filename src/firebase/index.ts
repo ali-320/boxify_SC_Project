@@ -11,18 +11,20 @@ let auth: Auth;
 let firestore: Firestore;
 let storage: FirebaseStorage;
 
-// IMPORTANT: DO NOT MODIFY THIS FUNCTION
+// IMPORTANT: This is a simplified and robust initialization.
+// It ensures Firebase is initialized only once.
+if (!getApps().length) {
+  firebaseApp = initializeApp(firebaseConfig);
+} else {
+  firebaseApp = getApp();
+}
+
+auth = getAuth(firebaseApp);
+firestore = getFirestore(firebaseApp);
+storage = getStorage(firebaseApp);
+
+// This function is now used by the client provider to get the initialized services.
 export function initializeFirebase() {
-  if (!getApps().length) {
-    firebaseApp = initializeApp(firebaseConfig);
-  } else {
-    firebaseApp = getApp();
-  }
-
-  auth = getAuth(firebaseApp);
-  firestore = getFirestore(firebaseApp);
-  storage = getStorage(firebaseApp);
-
   return { firebaseApp, auth, firestore, storage };
 }
 

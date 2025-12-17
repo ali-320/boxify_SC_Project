@@ -7,7 +7,7 @@ import {
   uploadBytesResumable,
   UploadTask,
 } from "firebase/storage";
-import { useFirebase } from "@/firebase/provider";
+import { useFirebase } from "@/firebase";
 
 export function useUploadFile() {
   const { storage } = useFirebase();
@@ -20,7 +20,7 @@ export function useUploadFile() {
   const uploadFile = useCallback(
     (file: File, folder: string = "misc") => {
       if (!storage) {
-        setError(new Error("Firebase Storage is not available."));
+        setError(new Error("Firebase Storage is not available. Check your Firebase configuration."));
         return;
       }
 
